@@ -10,6 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 import { sx } from './styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -18,19 +19,52 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Login() {
   const [open, setOpen] = React.useState(false);
+  const [username, setUsername] = React.useState('');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleSubmit = () => {
+    if (username) {
+      axios.get('https://jsonplaceholder.typicode.com/users')
+        .then(function (response) {
+          // handle success
+          const isUsernameExist = response.data.map(e => e.username.toLowerCase()).includes(username.toLowerCase());
+          if (isUsernameExist) {
+            console.log('Username is Exist')
+          } else {
+            console.log('Username is not Exist')
+          }
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        });
+    }
+  }
 
   const renderLoginForm = () => (
     <Box sx={sx.loginFormContainer}>
       <Typography sx={sx.formTitle}>Login Page</Typography>
       <Box sx={sx.field}>
-        <TextField label="Username" variant="outlined" />
+        <TextField
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          label="Username"
+          variant="outlined" />
       </Box>
       <Box sx={sx.field}>
-        <TextField label="Password" variant="outlined" />
+        <TextField
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          label="Password"
+          variant="outlined" />
       </Box>
-      <Button variant="contained" sx={sx.loginButton} onClick={() => {}}>Login</Button>
+      <Button
+        variant="contained"
+        sx={sx.loginButton}
+        onClick={handleSubmit}
+      >
+        Login
+      </Button>
     </Box>
   )
 
