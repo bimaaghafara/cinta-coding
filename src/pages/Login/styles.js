@@ -10,7 +10,7 @@ export const sx = {
       md: '24px'
     }
   },
-  loginButton: {
+  loginModalButton: {
     borderRadius: '99px',
     width: '99px',
     textTransform: 'none'
@@ -22,5 +22,41 @@ export const sx = {
       md: '48px'
     },
     maxWidth: '100%'
+  },
+  closeButton: {
+    width: '48px',
+    margin: '20px 24px',
+    alignSelf: 'flex-end'
+  },
+  formTitle: {
+    fontWeight: '600',
+    fontSize: '24px',
+    mt: '75px',
+    mb: '100px'
+  },
+  loginFormContainer: {
+    textAlign: 'center'
+  },
+  loginButton: {
+    width: '270px',
+    borderRadius: '99px',
+    height: '40px'
+  },
+  field: {
+    margin: '36px',
+    '& .MuiInputBase-root': {
+      width: '270px',
+      borderRadius: '99px',
+    },
+    '& .MuiInputBase-input': {
+      padding: '12px 12px 12px 24px'
+    },
+    '& .MuiInputLabel-root': {
+      lineHeight: '16px',
+      paddingLeft: '8px',
+      '&.Mui-focused': {
+        padding: '0'
+      }
+    },
   }
 }
