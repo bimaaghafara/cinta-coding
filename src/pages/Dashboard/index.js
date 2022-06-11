@@ -23,6 +23,20 @@ export default function Dashboard() {
     })
   }, []);
 
+  React.useEffect(() => {
+    if (page && posts?.length) {
+      const promises = [];
+      for(let i = firstSliceIndex; i < lastSliceIndex; i++) {
+        promises.push(axios.get(`https://jsonplaceholder.typicode.com/posts/${posts[i].id}/comments`))
+      }
+      Promise.all(promises).then((values) => {
+        console.log(values);
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  }, [firstSliceIndex, lastSliceIndex, page, posts]);
+
   const handleChangePagination = (event, value) => {
     setPage(value);
   };
