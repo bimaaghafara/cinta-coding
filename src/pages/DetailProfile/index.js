@@ -1,5 +1,10 @@
+// components & styles
+import PageLayout from "../../components/PageLayout";
+
 export default function DetailProfile() {
   return (
-    <>DetailProfile Page</>
+    <PageLayout title="Profile">
+      <>DetailProfile Page</>
+    </PageLayout>
   )
 }

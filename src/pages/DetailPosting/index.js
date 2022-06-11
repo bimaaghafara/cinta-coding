@@ -1,5 +1,10 @@
+// components & styles
+import PageLayout from "../../components/PageLayout";
+
 export default function DetailPosting() {
   return (
-    <>DetailPosting Page</>
+    <PageLayout title="Post">
+      <>DetailPosting Page</>
+    </PageLayout>
   )
 }

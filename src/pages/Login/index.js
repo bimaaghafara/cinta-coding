@@ -1,4 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+// components & styles
 import {
   Box,
   Typography,
@@ -12,7 +16,6 @@ import {
   Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import axios from 'axios';
 import { sx } from './styles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -20,6 +23,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Login() {
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [snackbar, setSnackbar] = React.useState({});
   const [username, setUsername] = React.useState('');
@@ -31,13 +35,19 @@ export default function Login() {
     if (username) {
       axios.get('https://jsonplaceholder.typicode.com/users')
         .then(function (response) {
-          const isUsernameExist = response.data.map(e => e.username.toLowerCase()).includes(username.toLowerCase());
-          if (isUsernameExist) {
+          const user = response.data.find(e => e.username.toLowerCase() === username.toLowerCase());
+          if (user) {
             setSnackbar({
               open: true,
               severity: 'success',
               message: 'Login success!'
             });
+            localStorage.setItem('user', JSON.stringify({
+              id: user.id,
+              name: user.name,
+              username: user.username
+            }));
+            setTimeout(() => navigate('/dashboard'), 1000);
           } else {
             setSnackbar({
               open: true,

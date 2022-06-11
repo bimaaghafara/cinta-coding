@@ -1,5 +1,10 @@
+// components & styles
+import PageLayout from "../../components/PageLayout";
+
 export default function Dashboard() {
   return (
-    <>Dashboard Page</>
+    <PageLayout title="Post">
+      <>Dashboard Page</>
+    </PageLayout>
   )
 }
