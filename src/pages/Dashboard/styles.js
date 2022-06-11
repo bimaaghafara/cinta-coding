@@ -18,5 +18,9 @@ export const sx = {
     '& fieldset': {
       borderRadius: '99px'
     }
+  },
+  pagination: {
+    display: 'flex',
+    justifyContent: 'flex-end'
   }
 }
