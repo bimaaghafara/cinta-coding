@@ -8,6 +8,8 @@ import {
   Slide,
   IconButton,
   TextField,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
@@ -19,25 +21,45 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Login() {
   const [open, setOpen] = React.useState(false);
+  const [snackbar, setSnackbar] = React.useState({});
   const [username, setUsername] = React.useState('');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
+
   const handleSubmit = () => {
     if (username) {
       axios.get('https://jsonplaceholder.typicode.com/users')
         .then(function (response) {
-          // handle success
           const isUsernameExist = response.data.map(e => e.username.toLowerCase()).includes(username.toLowerCase());
           if (isUsernameExist) {
-            console.log('Username is Exist')
+            setSnackbar({
+              open: true,
+              severity: 'success',
+              message: 'Login success!'
+            });
           } else {
-            console.log('Username is not Exist')
+            setSnackbar({
+              open: true,
+              severity: 'error',
+              message: `Username "${username}" is not exist!`
+            });
           }
         })
         .catch(function (error) {
-          // handle error
           console.log(error);
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: 'Unknown Error!'
+          });
         });
+    } else {
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: 'Username is required'
+      });
     }
   }
 
@@ -95,6 +117,16 @@ export default function Login() {
           <CloseIcon />
         </IconButton>
         {renderLoginForm()}
+        <Snackbar
+          open={snackbar?.open}
+          autoHideDuration={5000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity={snackbar?.severity}>
+            {snackbar?.message}
+          </Alert>
+        </Snackbar>
       </Dialog>
     </Box>
   )
