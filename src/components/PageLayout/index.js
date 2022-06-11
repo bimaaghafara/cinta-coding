@@ -29,7 +29,9 @@ export default function PageLayout({
           <Typography sx={sx.cintaCoding}>Wellcome, </Typography>
           <Typography
             sx={[sx.cintaCoding, sx.name]}
-            onClick={() => navigate('/detail-profile')}
+            onClick={() => {
+              if (window.location.pathname !== '/detail-profile') navigate('/detail-profile')
+            }}
           >
             {user?.name}
           </Typography>
