@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 // components & styles
+import ScrollToTop from '../ScrollToTop';
 import {
   Box,
   Typography,
@@ -16,33 +17,35 @@ export default function PageLayout({
   const user = JSON.parse(localStorage.getItem('user') || null);
 
   return (
-    <Box sx={sx.root}>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={1}
-      >
-        <Typography
-          sx={sx.cintaCoding}
-          onClick={() => navigate('/')}
+    <ScrollToTop>
+      <Box sx={sx.root}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={1}
         >
-          Cinta Coding
-        </Typography>
-        <Typography sx={sx.title}>{title}</Typography>
-        <Box>
-          <Typography sx={sx.cintaCoding}>Wellcome, </Typography>
           <Typography
-            sx={[sx.cintaCoding, sx.name]}
-            onClick={() => {
-              if (window.location.pathname !== '/detail-profile') navigate('/detail-profile')
-            }}
+            sx={sx.cintaCoding}
+            onClick={() => navigate('/')}
           >
-            {user?.name}
+            Cinta Coding
           </Typography>
-        </Box>
-      </Stack>
-      {children}
-    </Box>
+          <Typography sx={sx.title}>{title}</Typography>
+          <Box>
+            <Typography sx={sx.cintaCoding}>Wellcome, </Typography>
+            <Typography
+              sx={[sx.cintaCoding, sx.name]}
+              onClick={() => {
+                if (window.location.pathname !== '/detail-profile') navigate('/detail-profile')
+              }}
+            >
+              {user?.name}
+            </Typography>
+          </Box>
+        </Stack>
+        {children}
+      </Box>
+    </ScrollToTop>
   );
 }

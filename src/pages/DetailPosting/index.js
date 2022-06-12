@@ -1,7 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+
+// services
+import { usePostQuery, useCommentsQuery, useUserQuery } from './services';
 
 // components & styles
 import PageLayout from "../../components/PageLayout";
@@ -21,35 +23,25 @@ export default function DetailPosting() {
   const [showComments, setShowComments] = React.useState(
     searchParams.get('showComments') === 'true'
   );
-  const [post, setPost] = React.useState({});
-  const [comments, setComments] = React.useState([]);
-  const [user, setUser] = React.useState({});
-
   const toggleShowComments = () => setShowComments(!showComments);
 
-  React.useEffect(() => {
-    axios.get(`https://jsonplaceholder.typicode.com/posts/${postId}`).then(res => {
-      setPost(res.data);
-    }).catch(error => {
-      console.log(error);
-    });
-    axios.get(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`).then(res => {
-      setComments(res.data);
-      console.log(res.data);
-    }).catch(error => {
-      console.log(error);
-    });
-  }, [postId])
+  const { data: postData } = usePostQuery(postId, {
+    enabled: !!postId,
+    onError: (error) => console.log(error)
+  });
+  const post = postData?.data || [];
 
-  React.useEffect(() => {
-    if(post?.userId) {
-      axios.get(`https://jsonplaceholder.typicode.com/users/${post.userId}`).then(res => {
-        setUser(res.data)
-      }).catch(error => {
-        console.log(error);
-      });
-    }
-  }, [post])
+  const { data: commentsData } = useCommentsQuery(postId, {
+    enabled: !!postId,
+    onError: (error) => console.log(error)
+  });
+  const comments = commentsData?.data || [];
+
+  const { data: userData } = useUserQuery(post?.userId, {
+    enabled: !!post?.userId,
+    onError: (error) => console.log(error)
+  });
+  const user = userData?.data || [];
 
   return (
     <PageLayout title="Post">
@@ -58,7 +50,7 @@ export default function DetailPosting() {
           onClick={() => navigate(-1)}
           sx={sx.back}
         />
-        <Box key={post.id} sx={sx.postContainer}>
+        <Box key={post?.id} sx={sx.postContainer}>
           <Grid container spacing={2}>
             <Grid item xs={5} sm={3} />
             <Grid item xs={7} sm={9}>
