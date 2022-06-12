@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
+// services
+import { useGetUsers } from './services';
 
 // components & styles
 import {
@@ -24,46 +26,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Login() {
   const navigate = useNavigate();
+  const [enabledGetUsers, setEnabledGetUsers] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [snackbar, setSnackbar] = React.useState({});
   const [username, setUsername] = React.useState('');
+  
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
 
   const handleSubmit = () => {
     if (username) {
-      axios.get('https://jsonplaceholder.typicode.com/users')
-        .then(function (response) {
-          const user = response.data.find(e => e.username.toLowerCase() === username.toLowerCase());
-          if (user) {
-            setSnackbar({
-              open: true,
-              severity: 'success',
-              message: 'Login success!'
-            });
-            localStorage.setItem('user', JSON.stringify({
-              id: user.id,
-              name: user.name,
-              username: user.username
-            }));
-            setTimeout(() => navigate('/dashboard'), 1000);
-          } else {
-            setSnackbar({
-              open: true,
-              severity: 'error',
-              message: `Username "${username}" is not exist!`
-            });
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: 'Unknown Error!'
-          });
-        });
+      setEnabledGetUsers(true);
     } else {
       setSnackbar({
         open: true,
@@ -72,6 +46,49 @@ export default function Login() {
       });
     }
   }
+
+  const handleError = (error) => {
+    if (error) {
+      console.log(error);
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: 'Unknown Error!'
+      });
+    }
+  };
+
+  const handleSuccess = (data) => {
+    if (data?.data) {
+      const user = data.data.find(e => e.username.toLowerCase() === username.toLowerCase());
+      if (user) {
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: 'Login success!'
+        });
+        localStorage.setItem('user', JSON.stringify({
+          id: user.id,
+          name: user.name,
+          username: user.username
+        }));
+        setTimeout(() => navigate('/dashboard'), 1000);
+      } else {
+        setEnabledGetUsers(false);
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: `Username "${username}" is not exist!`
+        });
+      }
+    }
+  };
+
+  const { isLoading } = useGetUsers({
+    enabled: enabledGetUsers,
+    onSuccess: (data) => handleSuccess(data),
+    onError: (error) => handleError(error)
+  });
 
   const renderLoginForm = () => (
     <Box sx={sx.loginFormContainer}>
@@ -94,6 +111,7 @@ export default function Login() {
         variant="contained"
         sx={sx.loginButton}
         onClick={handleSubmit}
+        disabled={isLoading}
       >
         Login
       </Button>
