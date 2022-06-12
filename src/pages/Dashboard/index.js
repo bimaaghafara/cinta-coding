@@ -67,7 +67,8 @@ export default function Dashboard() {
     setPage(value);
   };
 
-  const navigateToDetailPosting = (postId) => navigate(`/detail-posting/${postId}`)
+  const navigateToDetailPosting = (postId, showComments) =>
+    navigate(`/detail-posting/${postId}${showComments? '?showComments=true': ''}`)
 
   return (
     <PageLayout title="Post">
@@ -89,11 +90,11 @@ export default function Dashboard() {
                 <Typography sx={sx.title}>{post.title}</Typography>
                 <Stack direction="row" spacing={1}>
                   <ChatBubbleOutlineIcon
-                    onClick={() => navigateToDetailPosting(post.id)}
+                    onClick={() => navigateToDetailPosting(post.id, true)}
                     sx={sx.commentIcon}
                   />
                   <Typography
-                    onClick={() => navigateToDetailPosting(post.id)}
+                    onClick={() => navigateToDetailPosting(post.id, true)}
                     sx={sx.comment}
                   >
                     {comments[i]}

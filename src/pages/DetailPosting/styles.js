@@ -19,12 +19,22 @@ export const sx = {
   },
   body: {
     color: '#aaa',
-    marginBottom: '16px'
+    marginBottom: '24px'
   },
   commentIconContainer: {
     display: 'inline-flex',
     color: '#1776d1',
     cursor: 'pointer',
+    marginLeft: {
+      xs: '-77%',
+      sm: '0'
+    },
+  },
+  commentsContainer: {
+    marginLeft: {
+      xs: '-77%',
+      sm: '0'
+    },
   },
   commentIcon: {
     paddingTop: '2px',
@@ -35,5 +45,14 @@ export const sx = {
     marginBottom: '16px',
     cursor: 'pointer',
     fontWeight: '600'
+  },
+  commentContainer: {
+    marginBottom: '16px'
+  },
+  commentName: {
+    fontWeight: '600'
+  },
+  commentBody: {
+    color: '#aaa'
   }
 }

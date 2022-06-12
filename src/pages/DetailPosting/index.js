@@ -80,14 +80,23 @@ export default function DetailPosting() {
                   {comments.length}
                 </Typography>
               </Box>
-              <Box sx={[!showComments && sx.hidden]}>
+              <Box sx={[!showComments && sx.hidden, sx.commentsContainer]}>
                 <Typography
                   onClick={toggleShowComments}
                   sx={sx.allComments}
                 >
                   All comments
                 </Typography>
-                
+                {comments.map(comment => (
+                  <Grid key={comment.id} container spacing={2} sx={sx.commentContainer}>
+                    <Grid item xs={5} sm={3}>
+                      <Typography sx={sx.commentName}>{comment.name}</Typography>
+                    </Grid>
+                    <Grid item xs={7} sm={9}>
+                      <Typography sx={sx.commentBody}>{comment.body}</Typography>
+                    </Grid>
+                  </Grid>
+                ))}
               </Box>
             </Grid>
           </Grid>

@@ -23,7 +23,12 @@ export default function PageLayout({
         alignItems="center"
         spacing={1}
       >
-        <Typography sx={sx.cintaCoding}>Cinta Coding</Typography>
+        <Typography
+          sx={sx.cintaCoding}
+          onClick={() => navigate('/')}
+        >
+          Cinta Coding
+        </Typography>
         <Typography sx={sx.title}>{title}</Typography>
         <Box>
           <Typography sx={sx.cintaCoding}>Wellcome, </Typography>

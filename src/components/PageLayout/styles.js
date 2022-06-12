@@ -3,6 +3,7 @@ export const sx = {
     padding: '24px 10%'
   },
   cintaCoding: {
+    cursor: 'pointer',
     display: 'inline',
     fontWeight: '600',
     fontSize: {
