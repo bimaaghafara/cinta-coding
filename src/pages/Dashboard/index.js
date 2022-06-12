@@ -1,6 +1,8 @@
 import React from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+// services
+import { useGetPosts, useGetComments, useGetUsers } from './services';
 
 // components & styles
 import PageLayout from "../../components/PageLayout";
@@ -19,49 +21,34 @@ import { sx } from './styles';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [posts, setPosts] = React.useState([]);
+  const [enabledGetComments, setEnabledGetComments] = React.useState(false);
   const [page, setPage] = React.useState(1);
-  const [comments, setComments] = React.useState([]);
-  const [users, setUsers] = React.useState([]);
   const count = 10;
   const firstSliceIndex = (page - 1) * count;
   const lastSliceIndex = firstSliceIndex + count;
 
-  React.useEffect(() => {
-    axios.get('https://jsonplaceholder.typicode.com/posts').then(res => {
-      setPosts(res.data);
-    }).catch(error => {
-      console.log(error);
-    })
-  }, []);
+  const { data: postsData } = useGetPosts({
+    onError: (error) => console.log(error)
+  });
+  const posts = postsData?.data;
+
+  const commentsData = useGetComments(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
+    enabled: enabledGetComments,
+    onError: (error) => console.log(error)
+  });
+  const commentsLength = commentsData.map(e => e?.data?.data?.length);
+
+  const usersData = useGetUsers(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
+    enabled: enabledGetComments,
+    onError: (error) => console.log(error)
+  });
+  const users = usersData.map(e => e?.data?.data);
 
   React.useEffect(() => {
     if (page && posts?.length) {
-      const commentsPromises = [];
-      for(let i = firstSliceIndex; i < lastSliceIndex; i++) {
-        commentsPromises.push(
-          axios.get(`https://jsonplaceholder.typicode.com/posts/${posts[i].id}/comments`)
-        );
-      }
-      Promise.all(commentsPromises).then((values) => {
-        setComments(values.map(e => e.data.length));
-      }).catch(error => {
-        console.log(error);
-      });
-
-      const usersPromises = [];
-      for(let i = firstSliceIndex; i < lastSliceIndex; i++) {
-        usersPromises.push(
-          axios.get(`https://jsonplaceholder.typicode.com/users/${posts[i].userId}`)
-        );
-      }
-      Promise.all(usersPromises).then((values) => {
-        setUsers(values.map(e => e.data));
-      }).catch(error => {
-        console.log(error);
-      });
+      setEnabledGetComments(true);
     }
-  }, [firstSliceIndex, lastSliceIndex, page, posts]);
+  }, [page, posts]);
 
   const handleChangePagination = (event, value) => {
     setPage(value);
@@ -80,7 +67,7 @@ export default function Dashboard() {
           sx={sx.searchInput}
           endAdornment={<SearchIcon />}
         />
-        {posts.slice(firstSliceIndex, lastSliceIndex).map((post, i) => (
+        {posts?.slice?.(firstSliceIndex, lastSliceIndex).map((post, i) => (
           <Box key={post.id} sx={sx.postContainer}>
             <Grid container spacing={1}>
               <Grid item xs={5} sm={3}>
@@ -97,7 +84,7 @@ export default function Dashboard() {
                     onClick={() => navigateToDetailPosting(post.id, true)}
                     sx={sx.comment}
                   >
-                    {comments[i]}
+                    {commentsLength[i]}
                   </Typography>
                   <Typography
                     onClick={() => navigateToDetailPosting(post.id)}
@@ -113,7 +100,7 @@ export default function Dashboard() {
         <Pagination
           sx={sx.pagination}
           page={page}
-          count={Math.ceil(posts.length / count)}
+          count={Math.ceil((posts || []).length / count)}
           onChange={handleChangePagination}
           renderItem={(item) => (
             <PaginationItem
