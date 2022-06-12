@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // services
-import { useGetPosts, useGetComments, useGetUsers } from './services';
+import { usePostsQuery, useCommentsQueries, useUsersQueries } from './services';
 
 // components & styles
 import PageLayout from "../../components/PageLayout";
@@ -27,18 +27,18 @@ export default function Dashboard() {
   const firstSliceIndex = (page - 1) * count;
   const lastSliceIndex = firstSliceIndex + count;
 
-  const { data: postsData } = useGetPosts({
+  const { data: postsData } = usePostsQuery({
     onError: (error) => console.log(error)
   });
   const posts = postsData?.data;
 
-  const commentsData = useGetComments(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
+  const commentsData = useCommentsQueries(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
     enabled: enabledGetComments,
     onError: (error) => console.log(error)
   });
   const commentsLength = commentsData.map(e => e?.data?.data?.length);
 
-  const usersData = useGetUsers(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
+  const usersData = useUsersQueries(posts?.slice?.(firstSliceIndex, lastSliceIndex), {
     enabled: enabledGetComments,
     onError: (error) => console.log(error)
   });
@@ -49,10 +49,6 @@ export default function Dashboard() {
       setEnabledGetComments(true);
     }
   }, [page, posts]);
-
-  const handleChangePagination = (event, value) => {
-    setPage(value);
-  };
 
   const navigateToDetailPosting = (postId, showComments) =>
     navigate(`/detail-posting/${postId}${showComments? '?showComments=true': ''}`)
@@ -101,7 +97,7 @@ export default function Dashboard() {
           sx={sx.pagination}
           page={page}
           count={Math.ceil((posts || []).length / count)}
-          onChange={handleChangePagination}
+          onChange={(e, value) => setPage(value)}
           renderItem={(item) => (
             <PaginationItem
               components={{ previous: () => 'prev', next: () => 'next' }}

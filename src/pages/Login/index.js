@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // services
-import { useGetUsers } from './services';
+import { useUsersQuery } from './services';
 
 // components & styles
 import {
@@ -84,7 +84,7 @@ export default function Login() {
     }
   };
 
-  useGetUsers({
+  useUsersQuery({
     enabled: enabledGetUsers,
     onSuccess: (res) => handleSuccess(res),
     onError: (error) => handleError(error)
