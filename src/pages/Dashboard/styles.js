@@ -3,7 +3,7 @@ export const sx = {
     margin: 'auto',
     marginTop: '48px',
     width: '100%',
-    maxWidth: '450px',
+    maxWidth: '600px',
     '& > *': {
       padding: '8px'
     }

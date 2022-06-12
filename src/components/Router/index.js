@@ -17,7 +17,7 @@ export default function Router() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/detail-posting/:id" element={<DetailPosting />} />
+        <Route path="/detail-posting/:postId" element={<DetailPosting />} />
         <Route path="/detail-profile" element={<DetailProfile />} />
       </Routes>
     </BrowserRouter>
