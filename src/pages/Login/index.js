@@ -58,9 +58,9 @@ export default function Login() {
     }
   };
 
-  const handleSuccess = (data) => {
-    if (data?.data) {
-      const user = data.data.find(e => e.username.toLowerCase() === username.toLowerCase());
+  const handleSuccess = (res) => {
+    if (res?.data) {
+      const user = res.data.find(e => e.username.toLowerCase() === username.toLowerCase());
       if (user) {
         setSnackbar({
           open: true,
@@ -84,9 +84,9 @@ export default function Login() {
     }
   };
 
-  const { isLoading } = useGetUsers({
+  useGetUsers({
     enabled: enabledGetUsers,
-    onSuccess: (data) => handleSuccess(data),
+    onSuccess: (res) => handleSuccess(res),
     onError: (error) => handleError(error)
   });
 
@@ -111,7 +111,6 @@ export default function Login() {
         variant="contained"
         sx={sx.loginButton}
         onClick={handleSubmit}
-        disabled={isLoading}
       >
         Login
       </Button>
