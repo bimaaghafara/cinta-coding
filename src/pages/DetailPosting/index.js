@@ -41,7 +41,7 @@ export default function DetailPosting() {
     enabled: !!post?.userId,
     onError: (error) => console.log(error)
   });
-  const user = userData?.data || [];
+  const user = userData?.data || {};
 
   return (
     <PageLayout title="Post">
