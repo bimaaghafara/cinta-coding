@@ -19,7 +19,34 @@ export const sx = {
       borderRadius: '99px'
     }
   },
+  postContainer: {
+    marginBottom: '8px'
+  },
+  name: {
+    fontWeight: '600'
+  },
+  title: {
+    color: '#777',
+    marginBottom: '8px'
+  },
+  commentIcon: {
+    color: '#1776d1',
+    paddingTop: '2px',
+    cursor: 'pointer'
+  },
+  comment: {
+    color: '#1776d1',
+    fontWeight: '600',
+    cursor: 'pointer'
+  },
+  detailButton: {
+    marginLeft: '36px !important',
+    color: '#1776d1',
+    fontWeight: '600',
+    cursor: 'pointer'
+  },
   pagination: {
+    marginTop: '4px',
     display: 'flex',
     justifyContent: 'flex-end'
   }

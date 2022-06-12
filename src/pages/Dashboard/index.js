@@ -1,16 +1,28 @@
 import React from 'react';
 import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // components & styles
 import PageLayout from "../../components/PageLayout";
-import { Box, OutlinedInput, Pagination, PaginationItem} from '@mui/material';
+import {
+  Box,
+  OutlinedInput,
+  Pagination,
+  PaginationItem,
+  Grid,
+  Typography,
+  Stack,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { sx } from './styles';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [posts, setPosts] = React.useState([]);
   const [page, setPage] = React.useState(1);
+  const [comments, setComments] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
   const count = 10;
   const firstSliceIndex = (page - 1) * count;
   const lastSliceIndex = firstSliceIndex + count;
@@ -25,12 +37,26 @@ export default function Dashboard() {
 
   React.useEffect(() => {
     if (page && posts?.length) {
-      const promises = [];
+      const commentsPromises = [];
       for(let i = firstSliceIndex; i < lastSliceIndex; i++) {
-        promises.push(axios.get(`https://jsonplaceholder.typicode.com/posts/${posts[i].id}/comments`))
+        commentsPromises.push(
+          axios.get(`https://jsonplaceholder.typicode.com/posts/${posts[i].id}/comments`)
+        );
       }
-      Promise.all(promises).then((values) => {
-        console.log(values);
+      Promise.all(commentsPromises).then((values) => {
+        setComments(values.map(e => e.data.length));
+      }).catch(error => {
+        console.log(error);
+      });
+
+      const usersPromises = [];
+      for(let i = firstSliceIndex; i < lastSliceIndex; i++) {
+        usersPromises.push(
+          axios.get(`https://jsonplaceholder.typicode.com/users/${posts[i].userId}`)
+        );
+      }
+      Promise.all(usersPromises).then((values) => {
+        setUsers(values.map(e => e.data));
       }).catch(error => {
         console.log(error);
       });
@@ -40,6 +66,8 @@ export default function Dashboard() {
   const handleChangePagination = (event, value) => {
     setPage(value);
   };
+
+  const navigateToDetailPosting = (postId) => navigate(`/detail-posting/${postId}`)
 
   return (
     <PageLayout title="Post">
@@ -51,8 +79,35 @@ export default function Dashboard() {
           sx={sx.searchInput}
           endAdornment={<SearchIcon />}
         />
-        {posts.slice(firstSliceIndex, lastSliceIndex).map(post => (
-          <Box key={post.id}>{post.id} {post.title}</Box>
+        {posts.slice(firstSliceIndex, lastSliceIndex).map((post, i) => (
+          <Box key={post.id} sx={sx.postContainer}>
+            <Grid container spacing={1}>
+              <Grid item xs={5} sm={3}>
+                <Typography sx={sx.name}>{users[i]?.name}</Typography>
+              </Grid>
+              <Grid item xs={7} sm={9}>
+                <Typography sx={sx.title}>{post.title}</Typography>
+                <Stack direction="row" spacing={1}>
+                  <ChatBubbleOutlineIcon
+                    onClick={() => navigateToDetailPosting(post.id)}
+                    sx={sx.commentIcon}
+                  />
+                  <Typography
+                    onClick={() => navigateToDetailPosting(post.id)}
+                    sx={sx.comment}
+                  >
+                    {comments[i]}
+                  </Typography>
+                  <Typography
+                    onClick={() => navigateToDetailPosting(post.id)}
+                    sx={sx.detailButton}
+                  >
+                    Detail
+                  </Typography>
+                </Stack>
+              </Grid>
+            </Grid>
+          </Box>
         ))}
         <Pagination
           sx={sx.pagination}
