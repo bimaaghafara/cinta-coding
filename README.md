@@ -1,5 +1,5 @@
 # Cinta Coding
-An app that consist of severla pages:
+An app that consist of several pages:
 * Login page: use username for login.
 * Dashboard page: show the posts data & pagination.
 * Detail-Post page: show the post data & all comments.
